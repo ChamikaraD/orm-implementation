@@ -20,5 +20,5 @@ def query_database(request: AgentQueryRequest) -> AgentQueryResponse:
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=True
+            detail=str(e)
         )

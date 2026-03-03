@@ -1,6 +1,6 @@
-from collections.abc import AsyncGenerator
+from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import create_async_engine, async_session, async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
 DATABASE_URL = "postgresql+asyncpg://postgres:admin@localhost:5432/keells"
 

@@ -5,12 +5,12 @@ from langchain_community.utilities import SQLDatabase
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
 
-
 load_dotenv()
 
 DB_URL = "postgresql://postgres:admin@localhost:5432/keells"
 
 db = SQLDatabase.from_uri(DB_URL)
+
 
 model = ChatOpenAI(
     model="gpt-3.5-turbo"
@@ -32,7 +32,6 @@ only ask for the relevant columns given the question.
 
 DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the database.
 
-
 """.format(
     dialect=db.dialect,
     top_k=5
@@ -47,31 +46,20 @@ agent = create_agent(
 
 def query_db_with_natural_language(user_input: str, thread_id: str = "1"):
     try:
-        config = {"configurable" : {"thread_id": thread_id}}
+        config = {"configurable" : {"thread_id" : thread_id}}
 
         output_result = None
 
         for step in agent.stream(
-                {"messages" : [{"role": "user", "content": user_input}]},
+                {"messages" : [{"role" : "user", "content": user_input}]},
                 config,
                 stream_mode="values"
         ):
-            if "messages" in step['model']:
-                last_message = step['model']["messages"][-1]
+            if "messages" in step:
+                last_message = step["messages"][-1]
                 if hasattr(last_message, "content"):
                     output_result = last_message.content
 
         return output_result if output_result else "No Content"
-
     except Exception as e:
         return f"Error Occurred - {str(e)}"
-
-
-
-
-
-
-
-
-
-

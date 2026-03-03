@@ -1,7 +1,7 @@
-from sqlalchemy import select
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db_models import Invoice, Invoice
+from db_models import Invoice
 from resp_models import InvoiceCreate
 
 

@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from starlette import status
+from starlette.exceptions import HTTPException
 
 from db_agent import query_db_with_natural_language
 from resp_models import AgentQueryRequest, AgentQueryResponse

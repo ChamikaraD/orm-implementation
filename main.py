@@ -6,6 +6,9 @@ from invoice_route import router as invoice_router
 from agent_routes import  router as agent_router
 from uuid import uuid4
 import gradio as gr
+
+
+
 app = FastAPI(title="ORM Implementation")
 
 app.include_router(user_router)
@@ -36,10 +39,7 @@ def db_agent_gradio_ui():
         )
     return db_ui
 
-@app.on_event("startup")
-async def mount_gradio():
-    gradio_app = db_agent_gradio_ui()
-    gr.mount_gradio_app(app, gradio_app, "/agent/ui")
+app = gr.mount_gradio_app(app, db_agent_gradio_ui(), "/agent/ui")
 
 #validations , prompt ,guarails enhancements enn oni
 #minimum previlages tiyen user kenekwa pawichchi krnn oni

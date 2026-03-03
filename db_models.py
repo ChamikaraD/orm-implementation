@@ -11,7 +11,7 @@ class Base(DeclarativeBase):
 
 class User(Base):
 
-    __tablename__ = 'users'
+    __tablename__= 'users'
 
     id : Mapped[int] = mapped_column(primary_key=True, index=True)
 
@@ -24,7 +24,7 @@ class User(Base):
 
 class Invoice(Base):
 
-    __tablename__ = 'invoices'
+    __tablename__= 'invoices'
 
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)

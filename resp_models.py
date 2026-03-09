@@ -49,3 +49,21 @@ class AgentQueryResponse(BaseModel):
     query: str
     result: str
     thread_id: str
+
+class DMLProposalRequest(BaseModel):
+    query: str
+
+class DMLProposalResponse(BaseModel):
+    approval_id :str
+    sql :str
+    status: str
+
+
+class DMLApprovalRequest(BaseModel):
+    approval_id: str
+    approve: bool
+
+class DMLApprovalResponse(BaseModel):
+    approval_id:str
+    status: str
+    result:str

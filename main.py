@@ -47,3 +47,10 @@ app = gr.mount_gradio_app(app, db_agent_gradio_ui(), "/agent/ui")
 #prompt injection
 
 #orm alchemy use kre
+
+
+
+#mewa build krnn
+# rag system ekak
+#document tikak vectorize krl eken retrival ekk ekka responses dena rag system ekak
+#retrival okmented generation kara mathakai ned

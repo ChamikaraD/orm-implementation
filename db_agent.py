@@ -1,12 +1,17 @@
+from uuid import uuid4
+
 import psycopg
 from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
+from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.checkpoint.postgres import PostgresSaver
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from db_models import PendingRequest
 
 load_dotenv()
 
@@ -53,10 +58,8 @@ agent = create_agent(
 )
 
 async def propose_dml_statement_for_human_approval(
-
         query: str,
         session:AsyncSession
-
 ):
     schema_details = db.get_table_info()
 
@@ -67,20 +70,24 @@ async def propose_dml_statement_for_human_approval(
     {schema_details}
     
     Uer Request - {query}
-    
-
     """
+    resp = model.invoke([
+        SystemMessage(content="You only return a single SQL Statement"),
+        HumanMessage(content=prompt)
+    ])
+    sql = resp.content if hasattr(resp, "content") else str(resp)
+    approval_id = str(uuid4())
 
+    pending_request = PendingRequest(
+        id=approval_id,
+        query=query,
+        sql=sql,
+        status="pending"
+    )
 
-
-
-
-
-
-
-
-
-
+    session.add(pending_request)
+    await session.commit()
+    return {"approval_id": approval_id, "sql": sql}
 
 
 

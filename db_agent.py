@@ -57,6 +57,32 @@ agent = create_agent(
     checkpointer=checkpointer
 )
 
+
+async def approve_and_execute(
+    approval_id: str,
+    approve: bool,
+    session: AsyncSession
+):
+    pending_request = await session.get(PendingRequest, approval_id)  #detch the record corresponding to primary key
+
+    if not pending_request:
+        raise ValueError(f"Record not found for this approval id - {approval_id}")
+
+    if pending_request.status != "pending":
+        raise ValueError("This request has already been processed")
+
+    if not approve:
+        pending_request.status = "Rejected"
+        await session.commit()
+        return "Rejected"
+
+    result = db.run(pending_request.sql)
+
+    pending_request.status = "approved"
+    await session.commit()
+    return str(result)
+
+
 async def propose_dml_statement_for_human_approval(
         query: str,
         session:AsyncSession

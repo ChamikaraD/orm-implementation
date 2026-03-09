@@ -45,3 +45,5 @@ app = gr.mount_gradio_app(app, db_agent_gradio_ui(), "/agent/ui")
 #minimum previlages tiyen user kenekwa pawichchi krnn oni
 #prompt harden
 #prompt injection
+
+#orm alchemy use kre

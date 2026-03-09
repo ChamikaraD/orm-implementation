@@ -1,9 +1,12 @@
+import psycopg
 from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.checkpoint.postgres import PostgresSaver
+from sqlalchemy.ext.asyncio import AsyncSession
 
 load_dotenv()
 
@@ -37,12 +40,49 @@ DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the databa
     top_k=5
 )
 
+
+conn = psycopg.connect(DB_URL, autocommit=True)
+checkpointer = PostgresSaver(conn=conn)
+checkpointer.setup()
+
 agent = create_agent(
     model,
     tools,
     system_prompt=system_prompt,
-    checkpointer=InMemorySaver()
+    checkpointer=checkpointer
 )
+
+async def propose_dml_statement_for_human_approval(
+
+        query: str,
+        session:AsyncSession
+
+):
+    schema_details = db.get_table_info()
+
+    prompt = f"""
+    You are a SQL Assistant, Generate Exactly INSERT, UPDATE,DELETE Statements Depending on the users requirement for {db.dialect}.
+    User Provided schema and DO NOT output anything except for the SQL statement.Do not Wrap it in code fences.
+    
+    {schema_details}
+    
+    Uer Request - {query}
+    
+
+    """
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def query_db_with_natural_language(user_input: str, thread_id: str = "1"):
     try:
